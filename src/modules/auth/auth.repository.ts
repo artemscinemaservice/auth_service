@@ -1,12 +1,14 @@
+import { BaseRepository } from '@artemscinemaservice/core/repository';
 import { Injectable } from '@nestjs/common';
 import { Account } from '@prisma/generated/client';
-import { AccountCreateInput } from '@prisma/generated/models';
 
 import { PrismaService } from '@/infrastructure/prisma/prisma.service';
 
 @Injectable()
-export class AuthRepository {
-	public constructor(private readonly prismaService: PrismaService) {}
+export class AuthRepository extends BaseRepository<PrismaService['account']> {
+	public constructor(private readonly prismaService: PrismaService) {
+		super(prismaService.account);
+	}
 
 	public async findAccountByPhoneNumber(
 		phoneNumber: string
@@ -20,9 +22,5 @@ export class AuthRepository {
 		return await this.prismaService.account.findUnique({
 			where: { email },
 		});
-	}
-
-	public async createAccount(data: AccountCreateInput) {
-		return await this.prismaService.account.create({ data });
 	}
 }

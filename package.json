@@ -36,7 +36,7 @@
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
-    "@artemscinemaservice/core": "1.2.0",
+    "@artemscinemaservice/core": "2.0.1",
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
     "@nestjs/cli": "^11.0.0",
@@ -71,6 +71,11 @@
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/$1",
+      "^@prisma/generated$": "<rootDir>/../prisma/generated",
+      "^@prisma/generated/(.*)$": "<rootDir>/../prisma/generated/$1"
     },
     "testPathIgnorePatterns": [
       "\\.e2e-spec\\.ts$"
