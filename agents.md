@@ -30,6 +30,7 @@ src/
       services/
       dto/
       mappers/
+      repositories/ 
       __tests__/
   core/
     prisma/

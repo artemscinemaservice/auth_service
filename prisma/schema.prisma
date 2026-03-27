@@ -1,0 +1,25 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "./generated"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Account {
+  id String @id @default(uuid())
+
+  phoneNumber String @unique @map("phone_number")
+  email       String @unique
+  password    String
+
+  isPhoneVerified Boolean @default(false) @map("is_phone_verified")
+  isEmailVerified Boolean @default(false) @map("is_email_verified")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("accounts")
+}
