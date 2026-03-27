@@ -15,13 +15,16 @@ export class AuthService {
 		try {
 			const account: Account | null =
 				type === 'PHONE_NUMBER'
-					? await this.authRepository.findAccountByPhoneNumber(
-							identifier
-						)
-					: await this.authRepository.findAccountByEmail(identifier);
+					? await this.authRepository.findUnique({
+							where: { phoneNumber: identifier },
+						})
+					: await this.authRepository.findUnique({
+							where: { email: identifier },
+						});
 			if (!account) {
 				return { success: false };
 			}
+
 			return { success: true };
 		} catch (error) {
 			// return { success: false };

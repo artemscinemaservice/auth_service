@@ -4,6 +4,7 @@ import {
 	OnModuleDestroy,
 	OnModuleInit,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/generated/client';
 import { Pool } from 'pg';
@@ -15,9 +16,10 @@ export class PrismaService
 {
 	private readonly logger = new Logger(PrismaService.name);
 
-	public constructor() {
+	public constructor(private readonly configService: ConfigService) {
 		const pool = new Pool({
-			connectionString: process.env.POSTGRES_URI ?? '',
+			connectionString: configService.getOrThrow<string>('POSTGRES_URI'),
+			// 'postgres://postgres:12345678@localhost:5433/cinema_auth',
 		});
 		const adapter = new PrismaPg(pool);
 		super({ adapter });

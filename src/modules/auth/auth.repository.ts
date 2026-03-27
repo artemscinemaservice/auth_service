@@ -10,6 +10,7 @@ export class AuthRepository extends BaseRepository<PrismaService['account']> {
 		super(prismaService.account);
 	}
 
+	//redundant-----*
 	public async findAccountByPhoneNumber(
 		phoneNumber: string
 	): Promise<Account | null> {
@@ -23,4 +24,5 @@ export class AuthRepository extends BaseRepository<PrismaService['account']> {
 			where: { email },
 		});
 	}
+	//*----redundant
 }
