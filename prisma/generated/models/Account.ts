@@ -167,8 +167,8 @@ export type AccountGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 
 export type AccountGroupByOutputType = {
   id: string
-  phoneNumber: string
-  email: string
+  phoneNumber: string | null
+  email: string | null
   password: string
   isPhoneVerified: boolean
   isEmailVerified: boolean
@@ -199,8 +199,8 @@ export type AccountWhereInput = {
   OR?: Prisma.AccountWhereInput[]
   NOT?: Prisma.AccountWhereInput | Prisma.AccountWhereInput[]
   id?: Prisma.StringFilter<"Account"> | string
-  phoneNumber?: Prisma.StringFilter<"Account"> | string
-  email?: Prisma.StringFilter<"Account"> | string
+  phoneNumber?: Prisma.StringNullableFilter<"Account"> | string | null
+  email?: Prisma.StringNullableFilter<"Account"> | string | null
   password?: Prisma.StringFilter<"Account"> | string
   isPhoneVerified?: Prisma.BoolFilter<"Account"> | boolean
   isEmailVerified?: Prisma.BoolFilter<"Account"> | boolean
@@ -210,8 +210,8 @@ export type AccountWhereInput = {
 
 export type AccountOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  phoneNumber?: Prisma.SortOrder
-  email?: Prisma.SortOrder
+  phoneNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  email?: Prisma.SortOrderInput | Prisma.SortOrder
   password?: Prisma.SortOrder
   isPhoneVerified?: Prisma.SortOrder
   isEmailVerified?: Prisma.SortOrder
@@ -235,8 +235,8 @@ export type AccountWhereUniqueInput = Prisma.AtLeast<{
 
 export type AccountOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  phoneNumber?: Prisma.SortOrder
-  email?: Prisma.SortOrder
+  phoneNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  email?: Prisma.SortOrderInput | Prisma.SortOrder
   password?: Prisma.SortOrder
   isPhoneVerified?: Prisma.SortOrder
   isEmailVerified?: Prisma.SortOrder
@@ -252,8 +252,8 @@ export type AccountScalarWhereWithAggregatesInput = {
   OR?: Prisma.AccountScalarWhereWithAggregatesInput[]
   NOT?: Prisma.AccountScalarWhereWithAggregatesInput | Prisma.AccountScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Account"> | string
-  phoneNumber?: Prisma.StringWithAggregatesFilter<"Account"> | string
-  email?: Prisma.StringWithAggregatesFilter<"Account"> | string
+  phoneNumber?: Prisma.StringNullableWithAggregatesFilter<"Account"> | string | null
+  email?: Prisma.StringNullableWithAggregatesFilter<"Account"> | string | null
   password?: Prisma.StringWithAggregatesFilter<"Account"> | string
   isPhoneVerified?: Prisma.BoolWithAggregatesFilter<"Account"> | boolean
   isEmailVerified?: Prisma.BoolWithAggregatesFilter<"Account"> | boolean
@@ -263,8 +263,8 @@ export type AccountScalarWhereWithAggregatesInput = {
 
 export type AccountCreateInput = {
   id?: string
-  phoneNumber: string
-  email: string
+  phoneNumber?: string | null
+  email?: string | null
   password: string
   isPhoneVerified?: boolean
   isEmailVerified?: boolean
@@ -274,8 +274,8 @@ export type AccountCreateInput = {
 
 export type AccountUncheckedCreateInput = {
   id?: string
-  phoneNumber: string
-  email: string
+  phoneNumber?: string | null
+  email?: string | null
   password: string
   isPhoneVerified?: boolean
   isEmailVerified?: boolean
@@ -285,8 +285,8 @@ export type AccountUncheckedCreateInput = {
 
 export type AccountUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   isPhoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -296,8 +296,8 @@ export type AccountUpdateInput = {
 
 export type AccountUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   isPhoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -307,8 +307,8 @@ export type AccountUncheckedUpdateInput = {
 
 export type AccountCreateManyInput = {
   id?: string
-  phoneNumber: string
-  email: string
+  phoneNumber?: string | null
+  email?: string | null
   password: string
   isPhoneVerified?: boolean
   isEmailVerified?: boolean
@@ -318,8 +318,8 @@ export type AccountCreateManyInput = {
 
 export type AccountUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   isPhoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -329,8 +329,8 @@ export type AccountUpdateManyMutationInput = {
 
 export type AccountUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   isPhoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -373,6 +373,10 @@ export type AccountMinOrderByAggregateInput = {
 
 export type StringFieldUpdateOperationsInput = {
   set?: string
+}
+
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
 }
 
 export type BoolFieldUpdateOperationsInput = {
@@ -436,8 +440,8 @@ export type $AccountPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {}
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    phoneNumber: string
-    email: string
+    phoneNumber: string | null
+    email: string | null
     password: string
     isPhoneVerified: boolean
     isEmailVerified: boolean

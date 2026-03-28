@@ -11,8 +11,8 @@ datasource db {
 model Account {
   id String @id @default(uuid())
 
-  phoneNumber String @unique @map("phone_number")
-  email       String @unique
+  phoneNumber String? @unique @map("phone_number")
+  email       String? @unique
   password    String
 
   isPhoneVerified Boolean @default(false) @map("is_phone_verified")
