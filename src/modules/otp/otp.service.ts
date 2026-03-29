@@ -1,4 +1,9 @@
+import {
+	VerifyOtpRequest,
+	VerifyOtpResponse,
+} from '@artemscinemaservice/contracts/gen/auth';
 import { Injectable } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
 import { createHash, randomUUID } from 'crypto';
 
 import { RedisService } from '@/infrastructure/redis/redis.service';
@@ -6,6 +11,7 @@ import { RedisService } from '@/infrastructure/redis/redis.service';
 @Injectable()
 export class OtpService {
 	public constructor(private readonly redisService: RedisService) {}
+
 	generateCode(): {
 		hash: string;
 		code: string;
@@ -15,7 +21,7 @@ export class OtpService {
 		return { hash, code };
 	}
 
-	public async sendCode({
+	public async generateOtp({
 		type,
 		identifier,
 	}: {
@@ -31,5 +37,27 @@ export class OtpService {
 			5 * 60
 		); // 5 minutes expiration
 		return { hash, code };
+	}
+
+	public async verifyOtp({
+		type,
+		identifier,
+		code,
+	}: VerifyOtpRequest): Promise<boolean> {
+		const storedHash = await this.redisService.get(
+			`otp:${type}:${identifier}`
+		);
+
+		if (!storedHash) {
+			throw new RpcException('Invalid or expired code');
+		}
+
+		const hash = createHash('sha256').update(code).digest('hex');
+
+		if (storedHash !== hash) {
+			throw new RpcException('Invalid code');
+		}
+		await this.redisService.del(`otp:${type}:${identifier}`);
+		return true;
 	}
 }

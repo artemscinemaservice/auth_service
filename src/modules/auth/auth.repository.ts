@@ -9,20 +9,4 @@ export class AuthRepository extends BaseRepository<PrismaService['account']> {
 	public constructor(private readonly prismaService: PrismaService) {
 		super(prismaService.account);
 	}
-
-	//redundant-----*
-	public async findAccountByPhoneNumber(
-		phoneNumber: string
-	): Promise<Account | null> {
-		return await this.prismaService.account.findUnique({
-			where: { phoneNumber },
-		});
-	}
-
-	public async findAccountByEmail(email: string): Promise<Account | null> {
-		return await this.prismaService.account.findUnique({
-			where: { email },
-		});
-	}
-	//*----redundant
 }

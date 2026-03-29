@@ -1,8 +1,11 @@
 import type {
 	SendOtpRequest,
 	SendOtpResponse,
+	VerifyOtpRequest,
+	VerifyOtpResponse,
 } from '@artemscinemaservice/contracts/gen/auth';
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
 import type { Account, Prisma } from '@prisma/generated/client';
 
 import { OtpService } from '../otp/otp.service';
@@ -22,12 +25,7 @@ export class AuthService {
 		const { identifier, type } = data;
 		try {
 			const normalizedType = this.normalizeIdentifierType(type);
-			let account: Account | null = await this.authRepository.findUnique({
-				where:
-					normalizedType === 'phone'
-						? { phoneNumber: identifier }
-						: { email: identifier },
-			});
+			let account = await this.findAccount({ identifier, type });
 
 			if (!account) {
 				account = await this.authRepository.create({
@@ -38,7 +36,7 @@ export class AuthService {
 				});
 			}
 
-			const hash = await this.otpService.sendCode({
+			const hash = await this.otpService.generateOtp({
 				identifier,
 				type: normalizedType,
 			});
@@ -50,6 +48,35 @@ export class AuthService {
 			// return { success: false };
 			throw error;
 		}
+	}
+
+	public async verifyOtp(data: VerifyOtpRequest): Promise<VerifyOtpResponse> {
+		const account = await this.findAccount(data);
+		if (!account) throw new RpcException('Account not found');
+
+		const isCodeValid = await this.otpService.verifyOtp(data);
+
+		if (!isCodeValid) {
+			throw new RpcException('Invalid code');
+		}
+
+		if (data.type === 'phone' && !account.isPhoneVerified) {
+			this.authRepository.update({
+				where: { id: account.id },
+				data: { isPhoneVerified: true },
+			});
+		}
+		if (data.type === 'email' && !account.isEmailVerified) {
+			this.authRepository.update({
+				where: { id: account.id },
+				data: { isEmailVerified: true },
+			});
+		}
+
+		return {
+			accessToken: 'mockAccess',
+			refreshToken: 'mockRefresh',
+		};
 	}
 
 	private buildAccountCreateData(
@@ -91,5 +118,21 @@ export class AuthService {
 		}
 
 		throw new BadRequestException('Unsupported identifier type');
+	}
+
+	private async findAccount({
+		identifier,
+		type,
+	}: {
+		identifier: string;
+		type: string;
+	}): Promise<Account | null> {
+		const normalizedType = this.normalizeIdentifierType(type);
+		return await this.authRepository.findUnique({
+			where:
+				normalizedType === 'phone'
+					? { phoneNumber: identifier }
+					: { email: identifier },
+		});
 	}
 }
