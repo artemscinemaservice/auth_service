@@ -11,6 +11,7 @@ import type { Account, Prisma } from '@prisma/generated/client';
 import { OtpService } from '../otp/otp.service';
 
 import { AuthRepository } from './auth.repository';
+import { RpcStatus } from '@artemscinemaservice/core/enums';
 
 const OTP_PLACEHOLDER_PASSWORD = 'otp-pending-password';
 type IdentifierType = 'phone' | 'email';
@@ -52,12 +53,13 @@ export class AuthService {
 
 	public async verifyOtp(data: VerifyOtpRequest): Promise<VerifyOtpResponse> {
 		const account = await this.findAccount(data);
-		if (!account) throw new RpcException('Account not found');
+		if (!account)
+			throw new RpcException({ code: RpcStatus.NOT_FOUND, details: 'Account not found' });
 
 		const isCodeValid = await this.otpService.verifyOtp(data);
 
 		if (!isCodeValid) {
-			throw new RpcException('Invalid code');
+			throw new RpcException({ details: 'Invalid code', code: RpcStatus.NOT_FOUND });
 		}
 
 		if (data.type === 'phone' && !account.isPhoneVerified) {

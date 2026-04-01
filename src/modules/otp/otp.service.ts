@@ -2,6 +2,7 @@ import {
 	VerifyOtpRequest,
 	VerifyOtpResponse,
 } from '@artemscinemaservice/contracts/gen/auth';
+import { RpcStatus } from '@artemscinemaservice/core/enums';
 import { Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { createHash, randomUUID } from 'crypto';
@@ -49,13 +50,19 @@ export class OtpService {
 		);
 
 		if (!storedHash) {
-			throw new RpcException('Invalid or expired code');
+			throw new RpcException({
+				code: RpcStatus.NOT_FOUND,
+				details: 'Invalid or expired code',
+			});
 		}
 
 		const hash = createHash('sha256').update(code).digest('hex');
 
 		if (storedHash !== hash) {
-			throw new RpcException('Invalid code');
+			throw new RpcException({
+				code: RpcStatus.NOT_FOUND,
+				details: 'Invalid code',
+			});
 		}
 		await this.redisService.del(`otp:${type}:${identifier}`);
 		return true;
