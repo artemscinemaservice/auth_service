@@ -9,6 +9,8 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/generated/client';
 import { Pool } from 'pg';
 
+import { AllConfigs } from '@/config';
+
 @Injectable()
 export class PrismaService
 	extends PrismaClient
@@ -16,9 +18,11 @@ export class PrismaService
 {
 	private readonly logger = new Logger(PrismaService.name);
 
-	public constructor(private readonly configService: ConfigService) {
+	public constructor(
+		private readonly configService: ConfigService<AllConfigs>
+	) {
 		const pool = new Pool({
-			connectionString: configService.getOrThrow<string>('POSTGRES_URI'),
+			connectionString: configService.get('db.uri', { infer: true }),
 			// 'postgres://postgres:12345678@localhost:5433/cinema_auth',
 		});
 		const adapter = new PrismaPg(pool);

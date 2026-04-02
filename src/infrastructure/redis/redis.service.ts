@@ -7,16 +7,20 @@ import {
 import { ConfigService } from '@nestjs/config';
 import Redis from 'ioredis';
 
+import { AllConfigs } from '@/config';
+
 @Injectable()
 export class RedisService
 	extends Redis
 	implements OnModuleInit, OnModuleDestroy
 {
-	public constructor(private readonly configService: ConfigService) {
+	public constructor(
+		private readonly configService: ConfigService<AllConfigs>
+	) {
 		super({
-			host: configService.getOrThrow<string>('REDIS_HOST'),
-			port: configService.getOrThrow<number>('REDIS_PORT'),
-			password: configService.get<string | undefined>('REDIS_PASSWORD'),
+			host: configService.get('redis.host', { infer: true }),
+			port: configService.get('redis.port', { infer: true }),
+			password: configService.get('redis.password', { infer: true }),
 			maxRetriesPerRequest: 5,
 			enableOfflineQueue: true,
 		});
