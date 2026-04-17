@@ -23,6 +23,8 @@ COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile --production=true \
 	&& yarn cache clean
 
+COPY prisma.config.ts ./
+COPY prisma ./prisma
 COPY --from=build /app/dist ./dist
 
 USER node
